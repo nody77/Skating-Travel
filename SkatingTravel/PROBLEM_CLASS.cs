@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,7 +23,72 @@ namespace Problem
         public static int RequiredFunction(Dictionary<string, int> vertices, Dictionary<KeyValuePair<string, string>, int> edges, string startVertex)
         {
             //REMOVE THIS LINE BEFORE START CODING
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            int shortest_path = 0, time = 0;
+            
+            Dictionary<string, List<string>> graph = new Dictionary<string, List<string>>();
+            Dictionary<string, int> discovery_time = new Dictionary<string, int>();
+            Dictionary<string, int> finishing_time = new Dictionary<string, int>();
+            Dictionary<string, int> color_vertex = new Dictionary<string, int>();
+            Dictionary<string, string> parent_vertex = new Dictionary<string, string>();
+            Dictionary<string, int> distances = new Dictionary<string, int>();
+
+            foreach(string vertex in vertices.Keys)
+            {
+                graph[vertex] = new List<string>();
+                color_vertex[vertex] = 0;
+                /*
+                  white vertex --> 0
+                  grey vertex --> 1
+                  black vertex --> 2
+                */
+                parent_vertex[vertex] = null;
+                distances[vertex] = int.MaxValue;
+            }
+
+            foreach(KeyValuePair<string, string> edge in edges.Keys)
+            {
+                if (vertices[edge.Key] >= vertices[edge.Value])
+                {
+                    graph[edge.Key].Add(edge.Value);
+                }
+            }
+
+            DFS(startVertex, ref time, ref color_vertex, ref finishing_time, ref discovery_time, ref parent_vertex, graph);
+           
+            finishing_time = finishing_time.OrderByDescending(pair => pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
+
+            distances[startVertex] = 0;
+            foreach(string vertex in finishing_time.Keys)
+            {
+                foreach(string adjacent_vertex in graph[vertex])
+                {
+                    KeyValuePair<string,string> edge = new KeyValuePair<string,string>(vertex, adjacent_vertex);
+                    if (distances[vertex] != int.MaxValue && distances[vertex] + edges[edge] < distances[adjacent_vertex])
+                    {
+                        distances[adjacent_vertex] = distances[vertex] + edges[edge];
+                    }
+                }
+            }
+            shortest_path = distances["T"];
+            return shortest_path;
+        }
+        public static void DFS(string vertex, ref int time,ref Dictionary<string, int> color_vertex, ref Dictionary<string, int> finishing_time, ref Dictionary<string, int> discovery_time, ref Dictionary<string, string> parent_vertex, Dictionary<string, List<string>> graph)
+        {
+            color_vertex[vertex] = 1;
+            time += 1;
+            discovery_time[vertex] = time;
+            foreach(string adjacent_vertex in graph[vertex])
+            {
+                if (color_vertex[adjacent_vertex] == 0)
+                {
+                    parent_vertex[adjacent_vertex] = vertex;
+                    DFS(adjacent_vertex, ref time, ref color_vertex, ref finishing_time, ref discovery_time, ref parent_vertex, graph);
+                }
+            }
+            color_vertex[vertex] = 2;
+            time += 1;
+            finishing_time[vertex] = time;
         }
         #endregion
     }

@@ -1,0 +1,7 @@
+F:\Year 3 2nd term\Analysis and Design of Algorithm\Assignments\Assignment 3\[U] Skating Travel\Skating-Travel\SkatingTravel\bin\Debug\SkatingTravel.exe.config
+F:\Year 3 2nd term\Analysis and Design of Algorithm\Assignments\Assignment 3\[U] Skating Travel\Skating-Travel\SkatingTravel\bin\Debug\SkatingTravel.exe
+F:\Year 3 2nd term\Analysis and Design of Algorithm\Assignments\Assignment 3\[U] Skating Travel\Skating-Travel\SkatingTravel\bin\Debug\SkatingTravel.pdb
+F:\Year 3 2nd term\Analysis and Design of Algorithm\Assignments\Assignment 3\[U] Skating Travel\Skating-Travel\SkatingTravel\obj\Debug\SkatingTravel.csproj.AssemblyReference.cache
+F:\Year 3 2nd term\Analysis and Design of Algorithm\Assignments\Assignment 3\[U] Skating Travel\Skating-Travel\SkatingTravel\obj\Debug\SkatingTravel.csproj.CoreCompileInputs.cache
+F:\Year 3 2nd term\Analysis and Design of Algorithm\Assignments\Assignment 3\[U] Skating Travel\Skating-Travel\SkatingTravel\obj\Debug\SkatingTravel.exe
+F:\Year 3 2nd term\Analysis and Design of Algorithm\Assignments\Assignment 3\[U] Skating Travel\Skating-Travel\SkatingTravel\obj\Debug\SkatingTravel.pdb
