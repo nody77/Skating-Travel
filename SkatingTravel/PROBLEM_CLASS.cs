@@ -30,7 +30,6 @@ namespace Problem
             Dictionary<string, int> discovery_time = new Dictionary<string, int>();
             Dictionary<string, int> finishing_time = new Dictionary<string, int>();
             Dictionary<string, int> color_vertex = new Dictionary<string, int>();
-            Dictionary<string, string> parent_vertex = new Dictionary<string, string>();
             Dictionary<string, int> distances = new Dictionary<string, int>();
 
             foreach(string vertex in vertices.Keys)
@@ -42,7 +41,6 @@ namespace Problem
                   grey vertex --> 1
                   black vertex --> 2
                 */
-                parent_vertex[vertex] = null;
                 distances[vertex] = int.MaxValue;
             }
 
@@ -52,10 +50,22 @@ namespace Problem
                 {
                     graph[edge.Key].Add(edge.Value);
                 }
+                else if (vertices[edge.Key] < vertices[edge.Value])
+                {
+                    graph[edge.Value].Add(edge.Key);
+                }
             }
 
-            DFS(startVertex, ref time, ref color_vertex, ref finishing_time, ref discovery_time, ref parent_vertex, graph);
-           
+            /*foreach (string vertex in graph.Keys)
+            {
+                if (color_vertex[vertex] == 0)
+                {
+                    DFS(vertex, ref time, ref color_vertex, ref finishing_time, ref discovery_time, graph);
+                }
+            }*/
+
+            DFS(startVertex, ref time, ref color_vertex, ref finishing_time, ref discovery_time, graph);
+
             finishing_time = finishing_time.OrderByDescending(pair => pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
 
             distances[startVertex] = 0;
@@ -63,17 +73,29 @@ namespace Problem
             {
                 foreach(string adjacent_vertex in graph[vertex])
                 {
-                    KeyValuePair<string,string> edge = new KeyValuePair<string,string>(vertex, adjacent_vertex);
-                    if (distances[vertex] != int.MaxValue && distances[vertex] + edges[edge] < distances[adjacent_vertex])
+                    KeyValuePair<string,string> edge_1 = new KeyValuePair<string,string>(vertex, adjacent_vertex);
+                    KeyValuePair<string, string> edge_2 = new KeyValuePair<string, string>(adjacent_vertex, vertex);
+                    if(edges.ContainsKey(edge_1))
                     {
-                        distances[adjacent_vertex] = distances[vertex] + edges[edge];
+                        if (distances[vertex] != int.MaxValue && distances[vertex] + edges[edge_1] < distances[adjacent_vertex])
+                        {
+                            distances[adjacent_vertex] = distances[vertex] + edges[edge_1];
+                        }
                     }
+                    else if (edges.ContainsKey(edge_2))
+                    {
+                        if (distances[vertex] != int.MaxValue && distances[vertex] + edges[edge_2] < distances[adjacent_vertex])
+                        {
+                            distances[adjacent_vertex] = distances[vertex] + edges[edge_2];
+                        }
+                    }
+                    
                 }
             }
             shortest_path = distances["T"];
             return shortest_path;
         }
-        public static void DFS(string vertex, ref int time,ref Dictionary<string, int> color_vertex, ref Dictionary<string, int> finishing_time, ref Dictionary<string, int> discovery_time, ref Dictionary<string, string> parent_vertex, Dictionary<string, List<string>> graph)
+        public static void DFS(string vertex, ref int time,ref Dictionary<string, int> color_vertex, ref Dictionary<string, int> finishing_time, ref Dictionary<string, int> discovery_time, Dictionary<string, List<string>> graph)
         {
             color_vertex[vertex] = 1;
             time += 1;
@@ -81,9 +103,8 @@ namespace Problem
             foreach(string adjacent_vertex in graph[vertex])
             {
                 if (color_vertex[adjacent_vertex] == 0)
-                {
-                    parent_vertex[adjacent_vertex] = vertex;
-                    DFS(adjacent_vertex, ref time, ref color_vertex, ref finishing_time, ref discovery_time, ref parent_vertex, graph);
+                { 
+                    DFS(adjacent_vertex, ref time, ref color_vertex, ref finishing_time, ref discovery_time, graph);
                 }
             }
             color_vertex[vertex] = 2;
