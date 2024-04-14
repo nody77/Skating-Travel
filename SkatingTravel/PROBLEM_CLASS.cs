@@ -25,11 +25,11 @@ namespace Problem
             //REMOVE THIS LINE BEFORE START CODING
             //throw new NotImplementedException();
             int shortest_path = 0, time = 0;
-            
+
             Dictionary<string, List<string>> graph = new Dictionary<string, List<string>>();
-            Dictionary<string, int> discovery_time = new Dictionary<string, int>();
+            //SortedDictionary<string, int> finishing_time = new SortedDictionary<string, int>();
             Dictionary<string, int> finishing_time = new Dictionary<string, int>();
-            Dictionary<string, int> color_vertex = new Dictionary<string, int>();
+            Dictionary<string, byte> color_vertex = new Dictionary<string, byte>();
             Dictionary<string, int> distances = new Dictionary<string, int>();
 
             foreach(string vertex in vertices.Keys)
@@ -37,9 +37,9 @@ namespace Problem
                 graph[vertex] = new List<string>();
                 color_vertex[vertex] = 0;
                 /*
-                  white vertex --> 0
-                  grey vertex --> 1
-                  black vertex --> 2
+                    white vertex --> 0
+                    grey vertex --> 1
+                    black vertex --> 2
                 */
                 distances[vertex] = int.MaxValue;
             }
@@ -56,15 +56,7 @@ namespace Problem
                 }
             }
 
-            /*foreach (string vertex in graph.Keys)
-            {
-                if (color_vertex[vertex] == 0)
-                {
-                    DFS(vertex, ref time, ref color_vertex, ref finishing_time, ref discovery_time, graph);
-                }
-            }*/
-
-            DFS(startVertex, ref time, ref color_vertex, ref finishing_time, ref discovery_time, graph);
+            DFS(startVertex, ref time, ref color_vertex, ref finishing_time, graph);
 
             finishing_time = finishing_time.OrderByDescending(pair => pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
 
@@ -77,14 +69,14 @@ namespace Problem
                     KeyValuePair<string, string> edge_2 = new KeyValuePair<string, string>(adjacent_vertex, vertex);
                     if(edges.ContainsKey(edge_1))
                     {
-                        if (distances[vertex] != int.MaxValue && distances[vertex] + edges[edge_1] < distances[adjacent_vertex])
+                        if (distances[vertex] + edges[edge_1] < distances[adjacent_vertex])
                         {
                             distances[adjacent_vertex] = distances[vertex] + edges[edge_1];
                         }
                     }
                     else if (edges.ContainsKey(edge_2))
                     {
-                        if (distances[vertex] != int.MaxValue && distances[vertex] + edges[edge_2] < distances[adjacent_vertex])
+                        if (distances[vertex] + edges[edge_2] < distances[adjacent_vertex])
                         {
                             distances[adjacent_vertex] = distances[vertex] + edges[edge_2];
                         }
@@ -95,22 +87,51 @@ namespace Problem
             shortest_path = distances["T"];
             return shortest_path;
         }
-        public static void DFS(string vertex, ref int time,ref Dictionary<string, int> color_vertex, ref Dictionary<string, int> finishing_time, ref Dictionary<string, int> discovery_time, Dictionary<string, List<string>> graph)
+        public static void DFS(string vertex, ref int time,ref Dictionary<string, byte> color_vertex,  ref Dictionary<string, int> finishing_time, Dictionary<string, List<string>> graph)
         {
             color_vertex[vertex] = 1;
             time += 1;
-            discovery_time[vertex] = time;
             foreach(string adjacent_vertex in graph[vertex])
             {
                 if (color_vertex[adjacent_vertex] == 0)
                 { 
-                    DFS(adjacent_vertex, ref time, ref color_vertex, ref finishing_time, ref discovery_time, graph);
+                    DFS(adjacent_vertex, ref time, ref color_vertex, ref finishing_time, graph);
                 }
             }
             color_vertex[vertex] = 2;
             time += 1;
             finishing_time[vertex] = time;
         }
+        /*public static void DFS(string startvertex, ref int time, ref Dictionary<string, byte> color_vertex, ref Dictionary<string, int> finishing_time, Dictionary<string, List<string>> graph)
+        {
+            Stack<string> dfsStack = new Stack<string>();
+            dfsStack.Push(startvertex);
+            color_vertex[startvertex] = 1;
+            time++;
+            while(dfsStack.Count > 0)
+            {
+                string vertex = dfsStack.Peek();
+                bool fullydiscovered = true;
+                foreach(string adjacent_vertex in graph[vertex])
+                {
+                    if (color_vertex[adjacent_vertex] == 0)
+                    {
+                        dfsStack.Push(adjacent_vertex);
+                        color_vertex[adjacent_vertex] = 1;
+                        time++;
+                        fullydiscovered = false;
+                        break;
+                    }
+                }
+                if (fullydiscovered)
+                {
+                    dfsStack.Pop();
+                    color_vertex[vertex] = 2;
+                    time++;
+                    finishing_time[vertex] = time;
+                }
+            }
+        }*/
         #endregion
     }
 }
